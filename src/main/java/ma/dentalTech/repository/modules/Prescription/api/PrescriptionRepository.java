@@ -1,0 +1,1 @@
+package ma.dentalTech.repository.modules.Prescription.api;

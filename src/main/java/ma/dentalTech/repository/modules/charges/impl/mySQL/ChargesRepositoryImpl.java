@@ -1,0 +1,144 @@
+package ma.dentalTech.repository.modules.charges.impl.mySQL;
+
+import ma.dentalTech.entities.Charges;
+import ma.dentalTech.conf.SessionFactory;
+import ma.dentalTech.repository.common.RowMappers;
+import ma.dentalTech.repository.modules.charges.api.ChargesRepository;
+
+import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime; // Import mis à jour
+import java.util.ArrayList;
+import java.util.List;
+
+public class ChargesRepositoryImpl implements ChargesRepository {
+
+   
+
+    @Override
+    public List<Charges> findAll() {
+        // La requête suppose que la colonne de date est nommée 'date'
+        String sql = "SELECT * FROM Charges ORDER BY date DESC";
+        List<Charges> out = new ArrayList<>();
+        try (Connection c = SessionFactory.getInstance().getConnection();
+             PreparedStatement ps = c.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) out.add(RowMappers.mapCharge(rs));
+        } catch (SQLException e) { throw new RuntimeException(e); }
+        return out;
+    }
+
+    @Override
+    public Charges findById(Long id) {
+        String sql = "SELECT * FROM Charges WHERE id = ?";
+        try (Connection c = SessionFactory.getInstance().getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setLong(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return RowMappers.mapCharge(rs);
+                return null;
+            }
+        } catch (SQLException e) { throw new RuntimeException(e); }
+    }
+
+    @Override
+    public void create(Charges ch) {
+        // Les colonnes sont ajustées à (titre, montant, date, description, utilisateur_id)
+        String sql = "INSERT INTO Charges(titre, montant, date, description, utilisateur_id) VALUES(?,?,?,?,?)";
+        try (Connection c = SessionFactory.getInstance().getConnection();
+             PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, ch.getTitre()); // Nouveau champ
+            ps.setDouble(2, ch.getMontant());
+            ps.setTimestamp(3, Timestamp.valueOf(ch.getDate())); // Utilise Timestamp pour LocalDateTime
+            ps.setString(4, ch.getDescription());
+            ps.setLong(5, ch.getUtilisateurId());
+
+            ps.executeUpdate();
+            try (ResultSet keys = ps.getGeneratedKeys()) {
+                if (keys.next()) ch.setId(keys.getLong(1));
+            }
+        } catch (SQLException e) { throw new RuntimeException(e); }
+    }
+
+    @Override
+    public void update(Charges ch) {
+        String sql = """
+            UPDATE Charges SET titre=?, montant=?, date=?, description=?, utilisateur_id=?
+            WHERE id=?
+            """;
+        try (Connection c = SessionFactory.getInstance().getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, ch.getTitre());
+            ps.setDouble(2, ch.getMontant());
+            ps.setTimestamp(3, Timestamp.valueOf(ch.getDate())); // Utilise Timestamp
+            ps.setString(4, ch.getDescription());
+            ps.setLong(5, ch.getUtilisateurId());
+            ps.setLong(6, ch.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) { throw new RuntimeException(e); }
+    }
+
+    @Override
+    public void delete(Charges ch) {
+        if (ch != null) deleteById(ch.getId());
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        String sql = "DELETE FROM Charges WHERE id = ?";
+        try (Connection c = SessionFactory.getInstance().getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setLong(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) { throw new RuntimeException(e); }
+    }
+
+    // ------------------------------------
+    // -------- 2. FINDERS SPÉCIFIQUES --------
+    // ------------------------------------
+
+    @Override
+    public List<Charges> findByType(String titre) { // Renommée de findByType à findByTitre si l'interface le permet
+        String sql = "SELECT * FROM Charges WHERE titre = ? ORDER BY date DESC";
+        List<Charges> out = new ArrayList<>();
+        try (Connection c = SessionFactory.getInstance().getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, titre);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) out.add(RowMappers.mapCharges(rs));
+            }
+        } catch (SQLException e) { throw new RuntimeException(e); }
+        return out;
+    }
+
+    // NOTE: La méthode de l'interface était findByDateBetween(LocalDate, LocalDate).
+    // Si la colonne 'date' est un TIMESTAMP (LocalDateTime), cette méthode est plus appropriée :
+    public List<Charges> findByDateBetween(LocalDateTime start, LocalDateTime end) {
+        String sql = "SELECT * FROM Charges WHERE date BETWEEN ? AND ? ORDER BY date DESC";
+        List<Charges> out = new ArrayList<>();
+        try (Connection c = SessionFactory.getInstance().getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setTimestamp(1, Timestamp.valueOf(start));
+            ps.setTimestamp(2, Timestamp.valueOf(end));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) out.add(RowMappers.mapCharge(rs));
+            }
+        } catch (SQLException e) { throw new RuntimeException(e); }
+        return out;
+    }
+
+    @Override
+    public List<Charges> findByTitre(String titre) {
+        return List.of();
+    }
+
+    // Si vous devez absolument implémenter findByDateBetween(LocalDate, LocalDate) :
+    @Override
+    public List<Charges> findByDateBetween(LocalDate start, LocalDate end) {
+        // Cette implémentation doit convertir les LocalDate en limites LocalDateTime
+        LocalDateTime startDateTime = start.atStartOfDay();
+        LocalDateTime endDateTime = end.atTime(23, 59, 59, 999999999);
+
+        return findByDateBetween(startDateTime, endDateTime);
+    }
+}
