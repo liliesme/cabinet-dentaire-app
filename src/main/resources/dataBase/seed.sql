@@ -10,11 +10,11 @@ INSERT INTO charges (titre, description, montant, date, cabinet_id) VALUES
 
 INSERT INTO revenues (titre, description, montant, date, cabinet_id) VALUES
 ('Consultations', 'Revenus consultations - Semaine 1', 12000.00, '2024-11-07 00:00:00', 1),
-('Interventions chirurgicales', ' extractions', 25000.00, '2024-11-14 00:00:00', 1),
+('Interventions chirurgicales', ' extractions', 25000.00, '2024-11-14 00:00:00', 1);
 
 INSERT INTO patient (nom, prenom, adresse, telephone, email, date_naissance, sexe, assurance) VALUES
 ('Radi', 'ahmed', '15 Rue Oued Ziz, Casablanca', '0656789012', 'ahed.radi@email.com', '1975-04-12', 'Homme', 'CNOPS'),
-('ouasmi', 'Amina', '22 Avenue Mers Sultan, Casablanca', '0667890123', 'amina.ouasmi@email.com', '1982-08-25', 'Femme', 'CNSS'),
+('ouasmi', 'Amina', '22 Avenue Mers Sultan, Casablanca', '0667890123', 'amina.ouasmi@email.com', '1982-08-25', 'Femme', 'CNSS');
 
 
 INSERT INTO antecedents (nom, categorie) VALUES
@@ -27,32 +27,32 @@ INSERT INTO medecin (id_medecin, specialite) VALUES
 
 
 INSERT INTO secretaire (id_secretaire, num_cnss, commission) VALUES
-(1, 'CNSS-2021-001', 500.00),
+(1, 'CNSS-2021-001', 500.00);
 
 
 INSERT INTO agenda (annee, mois, heure_debut, heure_fin, duree_consultation, medecin_id) VALUES
 (2024, 11, '09:00:00', '18:00:00', 30, 2),
-(2024, 12, '09:00:00', '18:00:00', 30, 2),
+(2024, 12, '09:00:00', '18:00:00', 30, 2);
 
 
 INSERT INTO rdv (date, heure, motif, statut, patient_id, medecin_id) VALUES
 ('2024-11-20', '10:00:00', 'Mal de dents', 'TERMINE', 2, 2),
-('2024-11-22', '09:30:00', 'Détartrage', 'PLANIFIE', 4, 2),
+('2024-11-22', '09:30:00', 'Détartrage', 'PLANIFIE', 4, 2);
 
 
 INSERT INTO medicament (nom, laboratoire, type_dosage, forme, remboursable, posologie, description) VALUES
 ('Paracétamol', 'lab1', '1000mg', 'COMPRIME', TRUE, '1 comprimé 3 fois par jour', 'Antalgique et antipyrétique'),
-('Bain de bouche ', 'lab2', '0.12%', 'SIROP', FALSE, '2 fois par jour', 'Antiseptique buccal'),
+('Bain de bouche ', 'lab2', '0.12%', 'SIROP', FALSE, '2 fois par jour', 'Antiseptique buccal');
 
 
 INSERT INTO acte (libelle, categorie, prix_de_base) VALUES
 ('Consultation dentaire', 'Consultation', 300.00),
-('Détartrage', 'Hygiène', 400.00),
+('Détartrage', 'Hygiène', 400.00);
 
 INSERT INTO intervention_medecin (prix_de_patient, nomb_delit, acte_id, medecin_id) VALUES
 (300.00, 1, 1, 2),
 (500.00, 1, 3, 2),
-(1200.00, 1, 6, 2),
+(1200.00, 1, 6, 2);
 
 
 INSERT INTO dossier_medicale (date_de_creation, patient_id) VALUES
