@@ -3,14 +3,14 @@ INSERT INTO role(libelle) VALUES ('ADMIN'), ('MEDECIN'), ('SECRETAIRE')
 ON DUPLICATE KEY UPDATE libelle=VALUES(libelle);
 
 INSERT INTO charges (titre, description, montant, date) VALUES
-('Loyer', 'Loyer du cabinet - Novembre 2024', 7000.00, '2024-11-01 00:00:00', 1),
-('Équipement dentaire', 'Achat de matériel médical', 15000.00, '2024-11-05 10:30:00', 1),
-('Salaires personnel', 'Salaires du mois de novembre', 35000.00, '2024-11-30 00:00:00', 1),
+('Loyer', 'Loyer du cabinet - Novembre 2024', 7000.00, '2024-11-01 00:00:00'),
+('Équipement dentaire', 'Achat de matériel médical', 15000.00, '2024-11-05 10:30:00'),
+('Salaires personnel', 'Salaires du mois de novembre', 35000.00, '2024-11-30 00:00:00'),
 ('Électricité et eau', 'Factures', 1200.00, '2024-11-15 00:00:00', 1);
 
 INSERT INTO revenues (titre, description, montant, date) VALUES
-('Consultations', 'Revenus consultations - Semaine 1', 12000.00, '2024-11-07 00:00:00', 1),
-('Interventions chirurgicales', ' extractions', 25000.00, '2024-11-14 00:00:00', 1);
+('Consultations', 'Revenus consultations - Semaine 1', 12000.00, '2024-11-07 00:00:00'),
+('Interventions chirurgicales', ' extractions', 25000.00, '2024-11-14 00:00:00');
 
 INSERT INTO patient (nom, prenom, adresse, telephone, email, date_naissance, sexe, assurance) VALUES
 ('Radi', 'ahmed', '15 Rue Oued Ziz, Casablanca', '0656789012', 'ahed.radi@email.com', '1975-04-12', 'Homme', 'CNOPS'),
@@ -31,13 +31,13 @@ INSERT INTO secretaire (id_secretaire, num_cnss, commission) VALUES
 
 
 INSERT INTO agenda (annee, mois, heure_debut, heure_fin, duree_consultation, medecin_id) VALUES
-(2024, 11, '09:00:00', '18:00:00', 30, 2),
-(2024, 12, '09:00:00', '18:00:00', 30, 2);
+(2024, 11, '09:00:00', '18:00:00', 30, 1),
+(2024, 12, '09:00:00', '18:00:00', 30, 1);
 
 
 INSERT INTO rdv (date, heure, motif, statut, patient_id, medecin_id) VALUES
-('2024-11-20', '10:00:00', 'Mal de dents', 'TERMINE', 2, 2),
-('2024-11-22', '09:30:00', 'Détartrage', 'PLANIFIE', 4, 2);
+('2024-11-20', '10:00:00', 'Mal de dents', 'TERMINE', 2, 1),
+('2024-11-22', '09:30:00', 'Détartrage', 'PLANIFIE', 4, 1);
 
 
 INSERT INTO medicament (nom, laboratoire, type_dosage, forme, remboursable, posologie, description) VALUES
