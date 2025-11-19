@@ -1,4 +1,15 @@
 -- FULL SCHEMA (users/staff/medecin/secretaire + roles ...
+
+CREATE TABLE IF NOT EXISTS adresse (
+  id_adresse BIGINT PRIMARY KEY AUTO_INCREMENT,
+  rue VARCHAR(255),
+  ville VARCHAR(100),
+  code_postal VARCHAR(20),
+  pays VARCHAR(100) DEFAULT 'Maroc',
+  complement VARCHAR(255),
+  creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE IF NOT EXISTS cabinet_medicale (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   nom VARCHAR(200) NOT NULL,
@@ -15,16 +26,6 @@ CREATE TABLE IF NOT EXISTS cabinet_medicale (
   CONSTRAINT fk_cabinet_adresse FOREIGN KEY (adresse_id) REFERENCES adresse(id_adresse) ON DELETE SET NULL
 );
 
-
-CREATE TABLE IF NOT EXISTS adresse (
-  id_adresse BIGINT PRIMARY KEY AUTO_INCREMENT,
-  rue VARCHAR(255),
-  ville VARCHAR(100),
-  code_postal VARCHAR(20),
-  pays VARCHAR(100) DEFAULT 'Maroc',
-  complement VARCHAR(255),
-  creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
 
 CREATE TABLE IF NOT EXISTS role (
   id_role BIGINT PRIMARY KEY AUTO_INCREMENT,
