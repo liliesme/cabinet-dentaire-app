@@ -2,13 +2,13 @@
 INSERT INTO role(libelle) VALUES ('ADMIN'), ('MEDECIN'), ('SECRETAIRE')
 ON DUPLICATE KEY UPDATE libelle=VALUES(libelle);
 
-INSERT INTO charges (titre, description, montant, date, cabinet_id) VALUES
+INSERT INTO charges (titre, description, montant, date) VALUES
 ('Loyer', 'Loyer du cabinet - Novembre 2024', 7000.00, '2024-11-01 00:00:00', 1),
 ('Équipement dentaire', 'Achat de matériel médical', 15000.00, '2024-11-05 10:30:00', 1),
 ('Salaires personnel', 'Salaires du mois de novembre', 35000.00, '2024-11-30 00:00:00', 1),
 ('Électricité et eau', 'Factures', 1200.00, '2024-11-15 00:00:00', 1);
 
-INSERT INTO revenues (titre, description, montant, date, cabinet_id) VALUES
+INSERT INTO revenues (titre, description, montant, date) VALUES
 ('Consultations', 'Revenus consultations - Semaine 1', 12000.00, '2024-11-07 00:00:00', 1),
 ('Interventions chirurgicales', ' extractions', 25000.00, '2024-11-14 00:00:00', 1);
 
