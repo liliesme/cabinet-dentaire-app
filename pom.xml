@@ -1,0 +1,219 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- =================================================================== -->
+    <!--             FICHIER DE CONFIGURATION MAVEN (POM.XML)                -->
+    <!--  Projet de gestion d'un cabinet dentaire : DentalTech               -->
+    <!--  Objectifs pédagogiques :
+                 1) Forcer une version Java (23 par défaut, 25 possible)
+                 2) Définir une classe MAIN pour exécuter l'application
+                 3) Générer un "fat-jar" exécutable (Shade)
+                 4) Lancer les tests (JUnit 5) proprement (Surefire)
+                 5) Générer la JavaDoc
+                 6) Rendre le build reproductible (mêmes résultats partout)
+                                                                              -->
+    <!--  Auteur : Pr. O. El Midaoui                                          -->
+    <!-- ==================================================================== -->
+
+    <!-- ================== IDENTITÉ DU PROJET ====================== -->
+    <groupId>ma.dentalTech</groupId>
+    <artifactId>DentalTech</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>DentalTech</name>
+    <url>http://dentalTech.ma</url>
+    <description>Application de gestion complète d'un cabinet dentaire :
+        gestion des patients, consultations, rendez-vous, facturation et suivi médical.
+    </description>
+
+
+    <!-- =================== PROPRIÉTÉS GLOBALES ===================== -->
+    <properties>
+        <!-- Version du compilateur Java utilisée (ici JDK 23) -->
+        <maven.compiler.source>23</maven.compiler.source>
+        <maven.compiler.target>23</maven.compiler.target>
+        <maven.compiler.release>23</maven.compiler.release>
+
+        <!-- Encodage des fichiers sources et ressources -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Auteur du projet (métadonnée optionnelle) -->
+        <Author>Pr. O. El Midaoui</Author>
+        <!-- Version du MySQL driver placée ici pour lisibilité -->
+        <mysql.version>8.0.33</mysql.version>
+        <!-- Versions des plugins épinglées (bonne pratique) -->
+        <plugin.compiler.version>3.11.0</plugin.compiler.version>
+        <plugin.surefire.version>3.2.5</plugin.surefire.version>
+        <plugin.shade.version>3.5.3</plugin.shade.version>
+        <plugin.javadoc.version>3.6.3</plugin.javadoc.version>
+        <plugin.enforcer.version>3.4.1</plugin.enforcer.version>
+
+        <!-- Versions des dépendances de test -->
+        <junit.version>5.10.0</junit.version>
+        <mockito.version>5.7.0</mockito.version>
+    </properties>
+
+    <!-- =================== DÉPENDANCES DU PROJET =================== -->
+    <dependencies>
+
+        <!-- === Connexion à la base de données MySQL === -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.33</version>
+        </dependency>
+
+        <!-- === Lombok (simplifie le code Java) === -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.38</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- === BCrypt (cryptage des mot de passe utilisateur) === -->
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
+        </dependency>
+
+        <!-- ============================================================= -->
+        <!--                    DÉPENDANCES DE TEST                        -->
+        <!--        (scope compile pour utiliser dans src/main/java)       -->
+        <!-- ============================================================= -->
+
+        <!-- === JUnit 5 (Jupiter) - Framework de tests unitaires === -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- === JUnit 5 API === -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- === JUnit 5 Engine (moteur d'exécution des tests) === -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- === Mockito Core - Framework de mocking === -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- === Mockito JUnit 5 Extension === -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+    </dependencies>
+
+    <!-- ================== Build & Plugins ================== -->
+    <build>
+        <plugins>
+
+            <!-- (0) Maven Enforcer : GARANTIR la même version de Java partout -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>${plugin.enforcer.version}</version>
+                <executions>
+                    <execution>
+                        <id>enforce-java</id>
+                        <goals><goal>enforce</goal></goals>
+                        <configuration>
+                            <rules>
+                                <requireJavaVersion>
+                                    <version>[23,26)</version>
+                                    <message>Java 23 à 25 requis. Changez votre JDK ou ajustez le POM.</message>
+                                </requireJavaVersion>
+                            </rules>
+                            <fail>true</fail>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- (1) Compiler : force la version du langage (release 23/25) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${plugin.compiler.version}</version>
+                <configuration>
+                    <release>${maven.compiler.release}</release>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+
+            <!-- (2) Shade : crée un "fat-jar" exécutable (inclut les dépendances) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${plugin.shade.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals><goal>shade</goal></goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>ma.dentalTech.MainApp</mainClass>
+                                </transformer>
+                            </transformers>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <minimizeJar>false</minimizeJar>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- (3) Surefire : lance les tests unitaires JUnit 5 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${plugin.surefire.version}</version>
+                <configuration>
+                    <useModulePath>false</useModulePath>
+                    <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/*Tests.java</include>
+                        <include>**/*TestCase.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
+
+            <!-- (4) JavaDoc : génère la documentation de l'API -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${plugin.javadoc.version}</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <source>${maven.compiler.release}</source>
+                    <failOnError>false</failOnError>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
