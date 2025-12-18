@@ -29,11 +29,14 @@ public class RevenuesServiceImpl implements RevenuesService {
     @Override
     public Optional<Revenues> getRevenueById(Long id) throws ServiceException {
         try {
-            return Optional.ofNullable(repository.findById(id));
+            return repository.findById(id);
         } catch (Exception e) {
-            throw new ServiceException("Erreur lors de la recherche du revenu #" + id, e);
+            throw new ServiceException(
+                    "Erreur lors de la recherche du revenu #" + id, e
+            );
         }
     }
+
 
     @Override
     public void createRevenue(Revenues revenue) throws ServiceException, ValidationException {

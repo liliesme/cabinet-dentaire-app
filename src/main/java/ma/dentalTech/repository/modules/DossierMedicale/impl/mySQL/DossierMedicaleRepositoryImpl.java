@@ -26,18 +26,25 @@ public class DossierMedicaleRepositoryImpl implements DossierMedicaleRepository 
         return out;
     }
 
+
     @Override
-    public DossierMedicale findById(Long id) {
+    public Optional<DossierMedicale> findById(Long id) {
         String sql = "SELECT * FROM DossiersMedicaux WHERE id = ?";
         try (Connection c = SessionFactory.getInstance().getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
+
             ps.setLong(1, id);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return RowMappers.mapDossierMedical(rs);
-                return null;
+                if (rs.next()) {
+                    return Optional.of(RowMappers.mapDossierMedical(rs));
+                }
+                return Optional.empty();
             }
-        } catch (SQLException e) { throw new RuntimeException(e); }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
     @Override
     public void create(DossierMedicale dm) {

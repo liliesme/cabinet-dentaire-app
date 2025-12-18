@@ -28,19 +28,23 @@ public class MedecinRepositoryImpl implements MedecinRepository {
     }
 
     @Override
-    public medecin findById(Long id) {
+    public Optional<medecin> findById(Long id) {
         String sql = "SELECT * FROM Medecins WHERE id = ?";
         try (Connection c = SessionFactory.getInstance().getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
+
             ps.setLong(1, id);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return RowMappers.mapMedecin(rs);
-                return null;
+                if (rs.next()) {
+                    return Optional.of(RowMappers.mapMedecin(rs));
+                }
+                return Optional.empty();
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
 
     @Override
     public void create(medecin m) {

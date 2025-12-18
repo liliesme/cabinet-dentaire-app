@@ -27,16 +27,21 @@ public class ActeRepositoryImpl implements ActeRepository {
     }
 
     @Override
-    public Acte findById(Long id) {
+    public Optional<Acte> findById(Long id) {
         String sql = "SELECT id, nom, description, typeActe, tarifBase FROM " + TABLE_NAME + " WHERE id = ?";
         try (Connection c = SessionFactory.getInstance().getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
+
             ps.setLong(1, id);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return RowMappers.mapActe(rs);
-                return null;
+                if (rs.next()) {
+                    return Optional.of(RowMappers.mapActe(rs));
+                }
+                return Optional.empty();
             }
-        } catch (SQLException e) { throw new RuntimeException("Erreur lors de la recherche par ID: " + id, e); }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la recherche par ID: " + id, e);
+        }
     }
 
     @Override

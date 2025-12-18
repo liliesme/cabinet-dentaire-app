@@ -32,9 +32,11 @@ public class ConsultationServiceImpl implements ConsultationService {
     @Override
     public Optional<Consultation> getConsultationById(Long id) throws ServiceException {
         try {
-            return Optional.ofNullable(repository.findById(id));
+            return repository.findById(id);
         } catch (Exception e) {
-            throw new ServiceException("Erreur lors de la recherche de la consultation #" + id, e);
+            throw new ServiceException(
+                    "Erreur lors de la recherche de la consultation #" + id, e
+            );
         }
     }
 

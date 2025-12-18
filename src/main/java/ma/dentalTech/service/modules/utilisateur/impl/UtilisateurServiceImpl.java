@@ -29,9 +29,11 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     @Override
     public Optional<Utilisateur> getUtilisateurById(Long id) throws ServiceException {
         try {
-            return Optional.ofNullable(repository.findById(id));
+            return repository.findById(id);
         } catch (Exception e) {
-            throw new ServiceException("Erreur lors de la recherche de l'utilisateur #" + id, e);
+            throw new ServiceException(
+                    "Erreur lors de la recherche de l'utilisateur #" + id, e
+            );
         }
     }
 
@@ -113,21 +115,19 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     }
 
     @Override
-    public void changePassword(Long userId, String oldPassword, String newPassword) throws ServiceException, ValidationException {
+    public void changePassword(Long userId, String oldPassword, String newPassword)
+            throws ServiceException, ValidationException {
+
         Validators.minLen(newPassword, 6, "Nouveau mot de passe");
 
         try {
-            Utilisateur user = repository.findById(userId);
-            if (user == null) {
-                throw new ServiceException("Utilisateur introuvable");
-            }
+            Utilisateur user = repository.findById(userId)
+                    .orElseThrow(() -> new ServiceException("Utilisateur introuvable"));
 
-            
             if (!Crypto.matches(oldPassword, user.getPassword())) {
                 throw new ValidationException("Ancien mot de passe incorrect");
             }
 
-            
             user.setPassword(Crypto.hash(newPassword));
             repository.update(user);
 
@@ -139,22 +139,25 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     }
 
     @Override
-    public void resetPassword(Long userId, String newPassword) throws ServiceException, ValidationException {
+    public void resetPassword(Long userId, String newPassword)
+            throws ServiceException, ValidationException {
+
         Validators.minLen(newPassword, 6, "Mot de passe");
 
         try {
-            Utilisateur user = repository.findById(userId);
-            if (user == null) {
-                throw new ServiceException("Utilisateur introuvable");
-            }
+            Utilisateur user = repository.findById(userId)
+                    .orElseThrow(() -> new ServiceException("Utilisateur introuvable"));
 
             user.setPassword(Crypto.hash(newPassword));
             repository.update(user);
 
         } catch (Exception e) {
-            throw new ServiceException("Erreur lors de la réinitialisation du mot de passe", e);
+            throw new ServiceException(
+                    "Erreur lors de la réinitialisation du mot de passe", e
+            );
         }
     }
+
 
     @Override
     public boolean loginExists(String login) throws ServiceException {

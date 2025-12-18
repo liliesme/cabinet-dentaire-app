@@ -27,16 +27,21 @@ public class StaffRepositoryImpl implements StaffRepository {
     }
 
     @Override
-    public Staff findById(Long id) {
+    public Optional<Staff> findById(Long id) {
         String sql = "SELECT * FROM Staff WHERE id = ?";
         try (Connection c = SessionFactory.getInstance().getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
+
             ps.setLong(1, id);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return RowMappers.mapStaff(rs);
-                return null;
+                if (rs.next()) {
+                    return Optional.of(RowMappers.mapStaff(rs));
+                }
+                return Optional.empty();
             }
-        } catch (SQLException e) { throw new RuntimeException(e); }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

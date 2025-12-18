@@ -30,17 +30,23 @@ public class SituationFinanciereRepositoryImpl implements SituationFinanciereRep
     }
 
     @Override
-    public SituationFinanciere findById(Long id) {
+    public Optional<SituationFinanciere> findById(Long id) {
         String sql = "SELECT * FROM " + TABLE_NAME + " WHERE id = ?";
         try (Connection c = SessionFactory.getInstance().getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
+
             ps.setLong(1, id);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return RowMappers.mapSituationFinanciere(rs);
-                return null;
+                if (rs.next()) {
+                    return Optional.of(RowMappers.mapSituationFinanciere(rs));
+                }
+                return Optional.empty();
             }
-        } catch (SQLException e) { throw new RuntimeException(e); }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
     @Override
     public void create(SituationFinanciere sf) {

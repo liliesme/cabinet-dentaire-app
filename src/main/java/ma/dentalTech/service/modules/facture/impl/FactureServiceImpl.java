@@ -29,11 +29,14 @@ public class FactureServiceImpl implements FactureService {
     @Override
     public Optional<Facture> getFactureById(Long id) throws ServiceException {
         try {
-            return Optional.ofNullable(repository.findById(id));
+            return repository.findById(id);
         } catch (Exception e) {
-            throw new ServiceException("Erreur lors de la recherche de la facture #" + id, e);
+            throw new ServiceException(
+                    "Erreur lors de la recherche de la facture #" + id, e
+            );
         }
     }
+
 
     @Override
     public void createFacture(Facture facture) throws ServiceException, ValidationException {
@@ -96,10 +99,8 @@ public class FactureServiceImpl implements FactureService {
         }
 
         try {
-            Facture facture = repository.findById(factureId);
-            if (facture == null) {
-                throw new ServiceException("Facture introuvable");
-            }
+            Facture facture = repository.findById(factureId)
+                    .orElseThrow(() -> new ServiceException("Facture introuvable"));
 
             Double nouveauTotal = facture.getTotalPaye() + montant;
 
@@ -109,7 +110,6 @@ public class FactureServiceImpl implements FactureService {
 
             facture.setTotalPaye(nouveauTotal);
 
-            
             if (nouveauTotal.equals(facture.getMontantTotal())) {
                 facture.setEstPayee(true);
             }
@@ -126,19 +126,22 @@ public class FactureServiceImpl implements FactureService {
     @Override
     public void marquerCommePayee(Long factureId) throws ServiceException {
         try {
-            Facture facture = repository.findById(factureId);
-            if (facture == null) {
-                throw new ServiceException("Facture introuvable");
-            }
+            Facture facture = repository.findById(factureId)
+                    .orElseThrow(() -> new ServiceException("Facture introuvable"));
 
             facture.setEstPayee(true);
             facture.setTotalPaye(facture.getMontantTotal());
             repository.update(facture);
 
+        } catch (ServiceException e) {
+            throw e; // نعيد نفس الاستثناء
         } catch (Exception e) {
-            throw new ServiceException("Erreur lors du marquage de la facture comme payée", e);
+            throw new ServiceException(
+                    "Erreur lors du marquage de la facture comme payée", e
+            );
         }
     }
+
 
     @Override
     public List<Facture> getFacturesByPatient(Long patientId) throws ServiceException {

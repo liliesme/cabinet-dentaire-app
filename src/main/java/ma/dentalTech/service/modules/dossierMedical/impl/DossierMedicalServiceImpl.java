@@ -18,11 +18,14 @@ public class DossierMedicalServiceImpl implements DossierMedicalService {
     @Override
     public Optional<DossierMedicale> getDossierMedicalById(Long id) throws ServiceException {
         try {
-            return Optional.ofNullable(repository.findById(id));
+            return repository.findById(id);
         } catch (Exception e) {
-            throw new ServiceException("Erreur lors de la recherche du dossier médical #" + id, e);
+            throw new ServiceException(
+                    "Erreur lors de la recherche du dossier médical #" + id, e
+            );
         }
     }
+
 
     @Override
     public Optional<DossierMedicale> getDossierMedicalByPatient(Long patientId) throws ServiceException {

@@ -27,17 +27,23 @@ public class MedicamentRepositoryImpl implements MedicamentRepository {
     }
 
     @Override
-    public Medicament findById(Long id) {
+    public Optional<Medicament> findById(Long id) {
         String sql = "SELECT * FROM Medicaments WHERE id = ?";
         try (Connection c = SessionFactory.getInstance().getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
+
             ps.setLong(1, id);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return RowMappers.mapMedicament(rs);
-                return null;
+                if (rs.next()) {
+                    return Optional.of(RowMappers.mapMedicament(rs));
+                }
+                return Optional.empty();
             }
-        } catch (SQLException e) { throw new RuntimeException(e); }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
     @Override
     public void create(Medicament m) {

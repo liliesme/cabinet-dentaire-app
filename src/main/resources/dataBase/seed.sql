@@ -5,11 +5,11 @@ ON DUPLICATE KEY UPDATE libelle=VALUES(libelle);
 
 
 INSERT INTO utilisateur (nom, prenom, email, login, mot_de_passe, role_id) VALUES
-('Dr. Kebbaj', 'Ali', 'dr.Kebbaj@cabinet.ma', 'dr.Kebbaj', 'p235', 2),  
-('Rossafi', 'Houda', 'f.Rossafi@cabinet.ma', 'h.Rossafi', 'p123', 3); 
+('Dr. Kebbaj', 'Ali', 'dr.Kebbaj@cabinet.ma', 'dr.Kebbaj', 'p235', 2),
+('Rossafi', 'Houda', 'f.Rossafi@cabinet.ma', 'h.Rossafi', 'p123', 3);
 
 INSERT INTO staff (id_staff, salaire, prime, date_recrutement) VALUES
-(1, 15000.00, 2000.00, '2020-01-10'), 
+(1, 15000.00, 2000.00, '2020-01-10'),
 (2, 5000.00, 500.00, '2021-03-15');
 
 INSERT INTO charges (titre, description, montant, date) VALUES

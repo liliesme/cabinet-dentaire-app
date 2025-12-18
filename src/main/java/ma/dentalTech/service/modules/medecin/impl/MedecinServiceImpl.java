@@ -29,12 +29,14 @@ public class MedecinServiceImpl implements MedecinService {
     @Override
     public Optional<medecin> getMedecinById(Long id) throws ServiceException {
         try {
-            medecin m = repository.findById(id);
-            return Optional.ofNullable(m);
+            return repository.findById(id);
         } catch (Exception e) {
-            throw new ServiceException("Erreur lors de la recherche du médecin #" + id, e);
+            throw new ServiceException(
+                    "Erreur lors de la recherche du médecin #" + id, e
+            );
         }
     }
+
 
     @Override
     public void createMedecin(medecin medecin) throws ServiceException, ValidationException {

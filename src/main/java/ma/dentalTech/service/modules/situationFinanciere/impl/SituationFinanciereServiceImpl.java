@@ -29,11 +29,14 @@ public class SituationFinanciereServiceImpl implements SituationFinanciereServic
     @Override
     public Optional<SituationFinanciere> getSituationById(Long id) throws ServiceException {
         try {
-            return Optional.ofNullable(repository.findById(id));
+            return repository.findById(id);
         } catch (Exception e) {
-            throw new ServiceException("Erreur lors de la recherche de la situation #" + id, e);
+            throw new ServiceException(
+                    "Erreur lors de la recherche de la situation #" + id, e
+            );
         }
     }
+
 
     @Override
     public Optional<SituationFinanciere> getSituationByPatient(Long patientId) throws ServiceException {

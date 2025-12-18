@@ -29,11 +29,14 @@ public class CertificatServiceImpl implements CertificatService {
     @Override
     public Optional<Certificat> getCertificatById(Long id) throws ServiceException {
         try {
-            return Optional.ofNullable(repository.findById(id));
+            return repository.findById(id);
         } catch (Exception e) {
-            throw new ServiceException("Erreur lors de la recherche du certificat #" + id, e);
+            throw new ServiceException(
+                    "Erreur lors de la recherche du certificat #" + id, e
+            );
         }
     }
+
 
     @Override
     public void createCertificat(Certificat certificat) throws ServiceException, ValidationException {

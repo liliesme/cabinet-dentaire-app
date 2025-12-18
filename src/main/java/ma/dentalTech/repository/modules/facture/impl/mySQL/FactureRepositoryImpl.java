@@ -30,17 +30,23 @@ public class FactureRepositoryImpl implements FactureRepository {
     }
 
     @Override
-    public Facture findById(Long id) {
+    public Optional<Facture> findById(Long id) {
         String sql = "SELECT * FROM " + TABLE_NAME + " WHERE id = ?";
         try (Connection conn = SessionFactory.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
+
             ps.setLong(1, id);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return RowMappers.mapFacture(rs);
-                return null;
+                if (rs.next()) {
+                    return Optional.of(RowMappers.mapFacture(rs));
+                }
+                return Optional.empty();
             }
-        } catch (SQLException e) { throw new RuntimeException(e); }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
     @Override
     public void create(Facture f) {

@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class OrdonnanceRepositoryImpl implements OrdonnanceRepository {
@@ -38,17 +39,23 @@ public class OrdonnanceRepositoryImpl implements OrdonnanceRepository {
     }
 
     @Override
-    public Ordonnance findById(Long id) {
+    public Optional<Ordonnance> findById(Long id) {
         String sql = "SELECT * FROM " + TABLE_NAME + " WHERE id = ?";
         try (Connection c = SessionFactory.getInstance().getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
+
             ps.setLong(1, id);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return RowMappers.mapOrdonnance(rs);
-                return null;
+                if (rs.next()) {
+                    return Optional.of(RowMappers.mapOrdonnance(rs));
+                }
+                return Optional.empty();
             }
-        } catch (SQLException e) { throw new RuntimeException(e); }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
     @Override
     public void create(Ordonnance o) {

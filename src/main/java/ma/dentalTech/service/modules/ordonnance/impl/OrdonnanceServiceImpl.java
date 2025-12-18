@@ -28,11 +28,14 @@ public class OrdonnanceServiceImpl implements OrdonnanceService {
     @Override
     public Optional<Ordonnance> getOrdonnanceById(Long id) throws ServiceException {
         try {
-            return Optional.ofNullable(repository.findById(id));
+            return repository.findById(id);
         } catch (Exception e) {
-            throw new ServiceException("Erreur lors de la recherche de l'ordonnance #" + id, e);
+            throw new ServiceException(
+                    "Erreur lors de la recherche de l'ordonnance #" + id, e
+            );
         }
     }
+
 
     @Override
     public void createOrdonnance(Ordonnance ordonnance) throws ServiceException, ValidationException {

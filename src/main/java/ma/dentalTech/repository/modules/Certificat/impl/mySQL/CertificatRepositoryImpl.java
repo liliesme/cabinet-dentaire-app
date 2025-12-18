@@ -10,6 +10,7 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class CertificatRepositoryImpl implements CertificatRepository {
 
@@ -30,17 +31,23 @@ public class CertificatRepositoryImpl implements CertificatRepository {
     }
 
     @Override
-    public Certificat findById(Long id) {
+    public Optional<Certificat> findById(Long id) {
         String sql = "SELECT * FROM " + TABLE_NAME + " WHERE id = ?";
         try (Connection c = SessionFactory.getInstance().getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
+
             ps.setLong(1, id);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return RowMappers.mapCertificat(rs);
-                return null;
+                if (rs.next()) {
+                    return Optional.of(RowMappers.mapCertificat(rs));
+                }
+                return Optional.empty();
             }
-        } catch (SQLException e) { throw new RuntimeException(e); }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
     @Override
     public void create(Certificat cert) {

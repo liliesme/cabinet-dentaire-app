@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ChargesRepositoryImpl implements ChargesRepository {
 
@@ -26,17 +27,23 @@ public class ChargesRepositoryImpl implements ChargesRepository {
     }
 
     @Override
-    public Charges findById(Long id) {
+    public Optional<Charges> findById(Long id) {
         String sql = "SELECT * FROM Charges WHERE id = ?";
         try (Connection c = SessionFactory.getInstance().getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
+
             ps.setLong(1, id);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return RowMappers.mapCharges(rs); 
-                return null;
+                if (rs.next()) {
+                    return Optional.of(RowMappers.mapCharges(rs));
+                }
+                return Optional.empty();
             }
-        } catch (SQLException e) { throw new RuntimeException(e); }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
     @Override
     public void create(Charges ch) {

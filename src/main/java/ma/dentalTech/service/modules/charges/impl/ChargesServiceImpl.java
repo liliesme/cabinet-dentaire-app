@@ -29,11 +29,14 @@ public class ChargesServiceImpl implements ChargesService {
     @Override
     public Optional<Charges> getChargeById(Long id) throws ServiceException {
         try {
-            return Optional.ofNullable(repository.findById(id));
+            return repository.findById(id);
         } catch (Exception e) {
-            throw new ServiceException("Erreur lors de la recherche de la charge #" + id, e);
+            throw new ServiceException(
+                    "Erreur lors de la recherche de la charge #" + id, e
+            );
         }
     }
+
 
     @Override
     public void createCharge(Charges charge) throws ServiceException, ValidationException {

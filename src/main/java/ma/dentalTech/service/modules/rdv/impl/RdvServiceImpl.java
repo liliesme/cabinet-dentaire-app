@@ -32,11 +32,12 @@ public class RdvServiceImpl implements RdvService {
     @Override
     public Optional<RDV> getRdvById(Long id) throws ServiceException {
         try {
-            return Optional.ofNullable(repository.findById(id));
+            return repository.findById(id);
         } catch (Exception e) {
             throw new ServiceException("Erreur lors de la recherche du RDV", e);
         }
     }
+
 
     @Override
     public void createRdv(RDV rdv) throws ServiceException, ValidationException {
@@ -94,16 +95,19 @@ public class RdvServiceImpl implements RdvService {
     @Override
     public void cancelRdv(Long id) throws ServiceException {
         try {
-            RDV rdv = repository.findById(id);
-            if (rdv == null) {
-                throw new ServiceException("RDV introuvable");
-            }
+            RDV rdv = repository.findById(id)
+                    .orElseThrow(() -> new ServiceException("RDV introuvable"));
+
             rdv.setStatut(StatutRendezVous.ANNULE);
             repository.update(rdv);
+
+        } catch (ServiceException e) {
+            throw e; // نعيد نفس الاستثناء
         } catch (Exception e) {
             throw new ServiceException("Erreur lors de l'annulation du RDV", e);
         }
     }
+
 
     @Override
     public List<RDV> getRdvByPatient(Long patientId) throws ServiceException {
